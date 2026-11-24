@@ -1,0 +1,67 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PR #1513 修改清单与前后截图</title><style>
+*{box-sizing:border-box}body{margin:0;background:#f5f6f8;color:#202b38;font:16px/1.7 system-ui,-apple-system,"PingFang SC",sans-serif}main{max-width:1800px;margin:auto;padding:36px 28px}h1{font-size:30px;margin:0 0 12px}h2{font-size:22px}a{color:#135da8;text-underline-offset:3px}.meta{color:#536477}table{border-collapse:collapse;width:100%;background:white}th,td{border:1px solid #d9dfe6;padding:12px;text-align:left;vertical-align:top}th{background:#eaf0f5}section{margin-top:40px;padding:24px;background:white;border:1px solid #d9dfe6;border-radius:8px;scroll-margin-top:20px}section img{display:block;width:100%;height:auto;border:1px solid #d9dfe6}.files{font-size:14px}.tablewrap{overflow:auto}code{background:#eaf0f5;padding:2px 5px;border-radius:3px}@media(max-width:700px){main{padding:22px 12px}section{padding:12px}th,td{min-width:160px;padding:8px}h1{font-size:24px}}
+</style><main><h1>PR #1513 修改清单与前后截图</h1>
+<p class="meta">核对日期：2026-11-24 · <a href="https://github.com/AgoraIO/docs-portal/pull/1513">GitHub PR #1513</a><br>
+修改前：<code>main @ ba318a858</code>；修改后：<code>PR head @ 3c442f889</code>。共 8 个源文件，以下按 12 个可见改动区域列出。</p>
+<p>截图来自两个独立的源码版本，使用相同依赖及 1440 × 1050 的浏览器视口，均为英文页面的真实渲染。图片仅裁切到相关区域并加上前后版本标签；页面正文未改造。左侧为修改前，右侧为修改后。点击图片可打开原尺寸；下方可分别打开两张截图。此处展示的是 PR 改动，不代表已上线。</p>
+<h2 id="changes">修改清单</h2><div class="tablewrap"><table><thead><tr><th>编号</th><th>位置</th><th>修改前</th><th>修改后</th></tr></thead><tbody><tr><td>01</td><td><a href="#01-bitrate">集成指南：码率参考与限制去重</a></td><td>开头重复列出调用限速和并发上限，没有建议码率表。</td><td>加入 11 行参考表及简短的码率说明；调用限速和配额改为链接到 Limitations。</td></tr>
+<tr><td>02</td><td><a href="#02-domains">集成指南：主备域名及重试流程</a></td><td>按地区列出 RTMP 域名，使用 alternate primary / secondary 分类。</td><td>按四个地区、RTMP / SRT / WHIP 三个协议列出 12 组主备域名，补充地址格式和同地区同协议重试顺序。</td></tr>
+<tr><td>03</td><td><a href="#03-checklist">集成指南：配额检查项</a></td><td>检查表统一要求项目并发任务数小于 50。</td><td>检查表链接到适用的限速和并发配额，避免把非转码上限用于转码场景。</td></tr>
+<tr><td>04</td><td><a href="#04-quotas">API 限制：主备流计数口径</a></td><td>只有转码 10 路、非转码 50 路的上限表，未解释主备流计数。</td><td>补充按实际向频道发布的任务计数；正常主备组合通常计 1 路，待机连接不额外占用发布配额。上限数值不变。</td></tr>
+<tr><td>05</td><td><a href="#05-dual-stream">双流指南：删除重复且不准确的配额说明</a></td><td>写明每组主备流计为两路，包括待机备流，并链接集成指南。</td><td>改为链接 API Limitations，配额规则只维护一处。</td></tr>
+<tr><td>06</td><td><a href="#06-codecs">概述：区分输入与转码输出编码</a></td><td>将支持的编码与协议合写在一个功能表格单元格中。</td><td>按 RTMP/RTMPS、SRT、WHIP 分列输入编码，并说明转码输出单独配置；区分工具限制与网关能力。</td></tr>
+<tr><td>07</td><td><a href="#07-obs">快速开始：OBS x264 设置及截图</a></td><td>推荐 baseline、threads=6，并使用旧的编码器截图。</td><td>推荐 CBR、2 秒关键帧、high、bframes=0；低延迟场景使用 zerolatency。替换编码器截图，并说明 high 本身不会关闭 B 帧。</td></tr>
+<tr><td>08</td><td><a href="#08-defaults">快速开始：按协议说明默认转码行为</a></td><td>笼统说明默认不转码、直接发布原始流。</td><td>区分 RTMP/RTMPS/SRT 的视频透传、音频转码，以及 WHIP 的音视频透传。</td></tr>
+<tr><td>09</td><td><a href="#09-srt">SRT 指南：增加域名参考入口</a></td><td>编码支持列表之后直接进入 OBS 配置。</td><td>增加主备域名表链接，并提醒使用同地区、同协议的备用入口。</td></tr>
+<tr><td>10</td><td><a href="#10-whip-domains">WHIP 指南：增加域名参考入口</a></td><td>编码支持列表之后直接进入 OBS 配置。</td><td>增加主备域名表链接，并提醒使用同地区、同协议的备用入口。</td></tr>
+<tr><td>11</td><td><a href="#11-ffmpeg">WHIP 指南：FFmpeg 9.0.1 输出限制</a></td><td>说明 H.264、H.265、AV1 均可在 FFmpeg WHIP 示例中直接透传。</td><td>限定 FFmpeg 9.0.1 WHIP 输出为 H.264/Opus；调整透传条件，并说明 H.265/AV1 源需先转为 H.264。保留网关自身的输入编码能力。</td></tr>
+<tr><td>12</td><td><a href="#12-api">模板 API：自动码率说明与参考链接</a></td><td>bitrate=0 的说明只提到 width 和 height，没有建议码率参考入口。</td><td>明确根据输出分辨率与帧率选择编码目标，并链接集成指南中的码率表。共享说明同时用于创建/重置和更新模板。</td></tr></tbody></table></div>
+<section id="01-bitrate"><h2>01 · 集成指南：码率参考与限制去重</h2>
+      <p><b>修改前：</b>开头重复列出调用限速和并发上限，没有建议码率表。<br><b>修改后：</b>加入 11 行参考表及简短的码率说明；调用限速和配额改为链接到 Limitations。</p>
+      <a href="01-bitrate-compare.png" target="_blank"><img loading="lazy" src="01-bitrate-compare.png" alt="集成指南：码率参考与限制去重：左侧修改前，右侧修改后"></a>
+      <p class="files"><a href="01-bitrate-before.png" target="_blank">单独打开修改前</a> · <a href="01-bitrate-after.png" target="_blank">单独打开修改后</a> · <a href="#changes">返回清单</a></p></section>
+<section id="02-domains"><h2>02 · 集成指南：主备域名及重试流程</h2>
+      <p><b>修改前：</b>按地区列出 RTMP 域名，使用 alternate primary / secondary 分类。<br><b>修改后：</b>按四个地区、RTMP / SRT / WHIP 三个协议列出 12 组主备域名，补充地址格式和同地区同协议重试顺序。</p>
+      <a href="02-domains-compare.png" target="_blank"><img loading="lazy" src="02-domains-compare.png" alt="集成指南：主备域名及重试流程：左侧修改前，右侧修改后"></a>
+      <p class="files"><a href="02-domains-before.png" target="_blank">单独打开修改前</a> · <a href="02-domains-after.png" target="_blank">单独打开修改后</a> · <a href="#changes">返回清单</a></p></section>
+<section id="03-checklist"><h2>03 · 集成指南：配额检查项</h2>
+      <p><b>修改前：</b>检查表统一要求项目并发任务数小于 50。<br><b>修改后：</b>检查表链接到适用的限速和并发配额，避免把非转码上限用于转码场景。</p>
+      <a href="03-checklist-compare.png" target="_blank"><img loading="lazy" src="03-checklist-compare.png" alt="集成指南：配额检查项：左侧修改前，右侧修改后"></a>
+      <p class="files"><a href="03-checklist-before.png" target="_blank">单独打开修改前</a> · <a href="03-checklist-after.png" target="_blank">单独打开修改后</a> · <a href="#changes">返回清单</a></p></section>
+<section id="04-quotas"><h2>04 · API 限制：主备流计数口径</h2>
+      <p><b>修改前：</b>只有转码 10 路、非转码 50 路的上限表，未解释主备流计数。<br><b>修改后：</b>补充按实际向频道发布的任务计数；正常主备组合通常计 1 路，待机连接不额外占用发布配额。上限数值不变。</p>
+      <a href="04-quotas-compare.png" target="_blank"><img loading="lazy" src="04-quotas-compare.png" alt="API 限制：主备流计数口径：左侧修改前，右侧修改后"></a>
+      <p class="files"><a href="04-quotas-before.png" target="_blank">单独打开修改前</a> · <a href="04-quotas-after.png" target="_blank">单独打开修改后</a> · <a href="#changes">返回清单</a></p></section>
+<section id="05-dual-stream"><h2>05 · 双流指南：删除重复且不准确的配额说明</h2>
+      <p><b>修改前：</b>写明每组主备流计为两路，包括待机备流，并链接集成指南。<br><b>修改后：</b>改为链接 API Limitations，配额规则只维护一处。</p>
+      <a href="05-dual-stream-compare.png" target="_blank"><img loading="lazy" src="05-dual-stream-compare.png" alt="双流指南：删除重复且不准确的配额说明：左侧修改前，右侧修改后"></a>
+      <p class="files"><a href="05-dual-stream-before.png" target="_blank">单独打开修改前</a> · <a href="05-dual-stream-after.png" target="_blank">单独打开修改后</a> · <a href="#changes">返回清单</a></p></section>
+<section id="06-codecs"><h2>06 · 概述：区分输入与转码输出编码</h2>
+      <p><b>修改前：</b>将支持的编码与协议合写在一个功能表格单元格中。<br><b>修改后：</b>按 RTMP/RTMPS、SRT、WHIP 分列输入编码，并说明转码输出单独配置；区分工具限制与网关能力。</p>
+      <a href="06-codecs-compare.png" target="_blank"><img loading="lazy" src="06-codecs-compare.png" alt="概述：区分输入与转码输出编码：左侧修改前，右侧修改后"></a>
+      <p class="files"><a href="06-codecs-before.png" target="_blank">单独打开修改前</a> · <a href="06-codecs-after.png" target="_blank">单独打开修改后</a> · <a href="#changes">返回清单</a></p></section>
+<section id="07-obs"><h2>07 · 快速开始：OBS x264 设置及截图</h2>
+      <p><b>修改前：</b>推荐 baseline、threads=6，并使用旧的编码器截图。<br><b>修改后：</b>推荐 CBR、2 秒关键帧、high、bframes=0；低延迟场景使用 zerolatency。替换编码器截图，并说明 high 本身不会关闭 B 帧。</p>
+      <a href="07-obs-compare.png" target="_blank"><img loading="lazy" src="07-obs-compare.png" alt="快速开始：OBS x264 设置及截图：左侧修改前，右侧修改后"></a>
+      <p class="files"><a href="07-obs-before.png" target="_blank">单独打开修改前</a> · <a href="07-obs-after.png" target="_blank">单独打开修改后</a> · <a href="#changes">返回清单</a></p></section>
+<section id="08-defaults"><h2>08 · 快速开始：按协议说明默认转码行为</h2>
+      <p><b>修改前：</b>笼统说明默认不转码、直接发布原始流。<br><b>修改后：</b>区分 RTMP/RTMPS/SRT 的视频透传、音频转码，以及 WHIP 的音视频透传。</p>
+      <a href="08-defaults-compare.png" target="_blank"><img loading="lazy" src="08-defaults-compare.png" alt="快速开始：按协议说明默认转码行为：左侧修改前，右侧修改后"></a>
+      <p class="files"><a href="08-defaults-before.png" target="_blank">单独打开修改前</a> · <a href="08-defaults-after.png" target="_blank">单独打开修改后</a> · <a href="#changes">返回清单</a></p></section>
+<section id="09-srt"><h2>09 · SRT 指南：增加域名参考入口</h2>
+      <p><b>修改前：</b>编码支持列表之后直接进入 OBS 配置。<br><b>修改后：</b>增加主备域名表链接，并提醒使用同地区、同协议的备用入口。</p>
+      <a href="09-srt-compare.png" target="_blank"><img loading="lazy" src="09-srt-compare.png" alt="SRT 指南：增加域名参考入口：左侧修改前，右侧修改后"></a>
+      <p class="files"><a href="09-srt-before.png" target="_blank">单独打开修改前</a> · <a href="09-srt-after.png" target="_blank">单独打开修改后</a> · <a href="#changes">返回清单</a></p></section>
+<section id="10-whip-domains"><h2>10 · WHIP 指南：增加域名参考入口</h2>
+      <p><b>修改前：</b>编码支持列表之后直接进入 OBS 配置。<br><b>修改后：</b>增加主备域名表链接，并提醒使用同地区、同协议的备用入口。</p>
+      <a href="10-whip-domains-compare.png" target="_blank"><img loading="lazy" src="10-whip-domains-compare.png" alt="WHIP 指南：增加域名参考入口：左侧修改前，右侧修改后"></a>
+      <p class="files"><a href="10-whip-domains-before.png" target="_blank">单独打开修改前</a> · <a href="10-whip-domains-after.png" target="_blank">单独打开修改后</a> · <a href="#changes">返回清单</a></p></section>
+<section id="11-ffmpeg"><h2>11 · WHIP 指南：FFmpeg 9.0.1 输出限制</h2>
+      <p><b>修改前：</b>说明 H.264、H.265、AV1 均可在 FFmpeg WHIP 示例中直接透传。<br><b>修改后：</b>限定 FFmpeg 9.0.1 WHIP 输出为 H.264/Opus；调整透传条件，并说明 H.265/AV1 源需先转为 H.264。保留网关自身的输入编码能力。</p>
+      <a href="11-ffmpeg-compare.png" target="_blank"><img loading="lazy" src="11-ffmpeg-compare.png" alt="WHIP 指南：FFmpeg 9.0.1 输出限制：左侧修改前，右侧修改后"></a>
+      <p class="files"><a href="11-ffmpeg-before.png" target="_blank">单独打开修改前</a> · <a href="11-ffmpeg-after.png" target="_blank">单独打开修改后</a> · <a href="#changes">返回清单</a></p></section>
+<section id="12-api"><h2>12 · 模板 API：自动码率说明与参考链接</h2>
+      <p><b>修改前：</b>bitrate=0 的说明只提到 width 和 height，没有建议码率参考入口。<br><b>修改后：</b>明确根据输出分辨率与帧率选择编码目标，并链接集成指南中的码率表。共享说明同时用于创建/重置和更新模板。</p>
+      <a href="12-api-compare.png" target="_blank"><img loading="lazy" src="12-api-compare.png" alt="模板 API：自动码率说明与参考链接：左侧修改前，右侧修改后"></a>
+      <p class="files"><a href="12-api-before.png" target="_blank">单独打开修改前</a> · <a href="12-api-after.png" target="_blank">单独打开修改后</a> · <a href="#changes">返回清单</a></p></section><p><a href="pr1513-before-after.zip">下载全部截图与原始记录（ZIP，14.3 MB）</a></p></main></html>
